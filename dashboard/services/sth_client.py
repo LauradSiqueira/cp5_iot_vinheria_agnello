@@ -7,17 +7,19 @@ import requests
 from config import STH_URL, TIMEOUT, ENTIDADE_PADRAO, TIPO_PADRAO
 from services import cabecalhos
 
-
-def buscar_historico(atributo, entidade=ENTIDADE_PADRAO, tipo=TIPO_PADRAO, quantidade=20):
-    """
-    Devolve as últimas leituras de um atributo, da mais antiga para a mais nova.
-    Cada leitura é um dicionário: {"hora": "2026-10-28T12:00:00.000Z", "valor": 15.5}
-    A hora vem em UTC; quem exibe (o navegador) converte para o horário de Brasília.
-    """
+def buscar_historico(atributo, entidade=ENTIDADE_PADRAO, tipo=TIPO_PADRAO, quantidade=20, data_inicio=None, data_fim=None):
     url = f"{STH_URL}/STH/v1/contextEntities/type/{tipo}/id/{entidade}/attributes/{atributo}"
+    
+    # Parâmetros da busca: Limite de quantidade e Filtro de Datas (se houver)
+    parametros = {"lastN": quantidade}
+    if data_inicio:
+        parametros["dateFrom"] = f"{data_inicio}T00:00:00.000Z"
+    if data_fim:
+        parametros["dateTo"] = f"{data_fim}T23:59:59.999Z"
+        
     resposta = requests.get(
         url,
-        params={"lastN": quantidade},
+        params=parametros,
         headers=cabecalhos.para_leitura(),
         timeout=TIMEOUT,
     )
