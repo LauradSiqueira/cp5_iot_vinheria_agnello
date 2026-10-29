@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vinheria | Central de controle</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="app">
+    <!-- ===================== MENU LATERAL ===================== -->
+    <aside class="menu">
+      <div class="marca">
+        <p class="marca-nome">Vinheria</p>
+        <p class="marca-sub">Central de controle</p>
+      </div>
+      <nav aria-label="Principal">
+        <a href="#visao-geral" data-pagina="visao-geral">Visão geral</a>
+        <a href="#historico" data-pagina="historico">Histórico e gráficos</a>
+        <a href="#dispositivos" data-pagina="dispositivos">Dispositivos</a>
+        <a href="#limites" data-pagina="limites">Limites e alertas</a>
+      </nav>
+      <div class="conexao">
+        <span class="ponto" id="conexao-ponto"></span>
+        <span id="conexao-texto">Conectando...</span>
+      </div>
+    </aside>
+
+    <!-- ===================== CONTEÚDO PRINCIPAL ===================== -->
+    <main class="conteudo">
+      <header class="topo">
+        <div>
+          <h1 id="titulo-pagina">Visão geral</h1>
+          <p class="suave" id="subtitulo-pagina"></p>
+        </div>
+        <div class="seletor">
+          <label for="dispositivo">Dispositivo</label>
+          <select id="dispositivo"></select>
+        </div>
+      </header>
+
+      <!-- Banner de alerta/conexão -->
+      <div id="banner" class="banner" role="alert" hidden></div>
+
+      <!-- ---------- SEÇÃO: VISÃO GERAL ---------- -->
+      <section id="pagina-visao-geral" class="pagina">
+        <div class="cartoes">
+          <article class="cartao" data-atributo="temperature">
+            <h2>Temperatura</h2>
+            <p class="valor"><span data-valor>--</span><span class="unidade">°C</span></p>
+            <p class="chip sem_dado" data-chip>Sem dados</p>
+            <p class="suave" data-faixa></p>
+          </article>
+          <article class="cartao" data-atributo="humidity">
+            <h2>Umidade</h2>
+            <p class="valor"><span data-valor>--</span><span class="unidade">%</span></p>
+            <p class="chip sem_dado" data-chip>Sem dados</p>
+            <p class="suave" data-faixa></p>
+          </article>
+          <article class="cartao" data-atributo="luminosity">
+            <h2>Luminosidade</h2>
+            <p class="valor"><span data-valor>--</span><span class="unidade">%</span></p>
+            <p class="chip sem_dado" data-chip>Sem dados</p>
+            <p class="suave" data-faixa></p>
+          </article>
+        </div>
+
+        <div class="bloco">
+          <div class="bloco-topo">
+            <h2>Alertas do dispositivo</h2>
+            <label class="alternar">
+              <input type="checkbox" id="automatico" checked>
+              Alertas automáticos
+            </label>
+          </div>
+          <p id="resumo-alerta">Aguardando a primeira leitura.</p>
+          <p class="suave">Último comando enviado: <strong id="ultimo-comando">nenhum</strong></p>
+          <div class="botoes">
+            <button type="button" class="botao" data-comando="alerta_temp">Testar alerta de temperatura</button>
+            <button type="button" class="botao" data-comando="alerta_umid">Testar alerta de umidade</button>
+            <button type="button" class="botao" data-comando="alerta_luz">Testar alerta de luminosidade</button>
+            <button type="button" class="botao primario" data-comando="normal">Normalizar</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- SEÇÃO: HISTÓRICO E GRÁFICOS ---------- -->
+      <section id="pagina-historico" class="pagina" hidden>
+        <div class="barra-controles">
+          <label for="quantidade">Qtd:</label>
+          <select id="quantidade">
+            <option value="10">10</option>
+            <option value="20" selected>20</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+
+          <label for="data-inicio">De:</label>
+          <input type="date" id="data-inicio">
+
+          <label for="data-fim">Até:</label>
+          <input type="date" id="data-fim">
+
+          <button type="button" class="botao" id="atualizar-historico">Atualizar</button>
+          <button type="button" class="botao" id="limpar-historico">Limpar filtro</button>
+          
+          <span class="suave">Atualização a cada 5s.</span>
+        </div>
+
+        <div class="bloco">
+          <div class="bloco-topo">
+            <h2>Temperatura (°C)</h2>
+            <button type="button" class="botao" data-csv="temperature">Baixar CSV</button>
+          </div>
+          <div class="grafico"><canvas id="grafico-temperature"></canvas></div>
+          <p class="suave" id="ultima-temperature"></p>
+        </div>
+
+        <div class="bloco">
+          <div class="bloco-topo">
+            <h2>Umidade (%)</h2>
+            <button type="button" class="botao" data-csv="humidity">Baixar CSV</button>
+          </div>
+          <div class="grafico"><canvas id="grafico-humidity"></canvas></div>
+          <p class="suave" id="ultima-humidity"></p>
+        </div>
+
+        <div class="bloco">
+          <div class="bloco-topo">
+            <h2>Luminosidade (%)</h2>
+            <button type="button" class="botao" data-csv="luminosity">Baixar CSV</button>
+          </div>
+          <div class="grafico"><canvas id="grafico-luminosity"></canvas></div>
+          <p class="suave" id="ultima-luminosity"></p>
+        </div>
+      </section>
+
+      <!-- ---------- SEÇÃO: DISPOSITIVOS ---------- -->
+      <section id="pagina-dispositivos" class="pagina" hidden>
+        <div class="bloco">
+          <h2>Dispositivos cadastrados</h2>
+          <div class="rolagem">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Dispositivo</th>
+                  <th scope="col">Entidade</th>
+                  <th scope="col">Tipo</th>
+                  <th scope="col">Atributos</th>
+                  <th scope="col">Comandos</th>
+                  <th scope="col">Ações</th>
+                </tr>
+              </thead>
+              <tbody id="tabela-dispositivos"></tbody>
+            </table>
+          </div>
+          <p class="suave" id="sem-dispositivos" hidden>Nenhum dispositivo cadastrado.</p>
+        </div>
+
+        <div class="bloco">
+          <h2>Cadastrar novo dispositivo</h2>
+          <form id="form-dispositivo" class="formulario">
+            <label for="device_id">Nome do dispositivo</label>
+            <input id="device_id" name="device_id" type="text" required minlength="3" maxlength="40" pattern="[a-z0-9_]{3,40}" placeholder="vinheria002" autocomplete="off">
+            <button type="submit" class="botao primario">Cadastrar</button>
+          </form>
+          <div id="resultado-cadastro" class="resultado" hidden></div>
+        </div>
+      </section>
+
+      <!-- ---------- SEÇÃO: LIMITES E ALERTAS ---------- -->
+      <section id="pagina-limites" class="pagina" hidden>
+        <div class="bloco">
+          <h2>Limites de cada sensor</h2>
+          <form id="form-limites" class="formulario">
+            <fieldset>
+              <legend>Temperatura (°C)</legend>
+              <label for="lim-temperature-min">Mínimo</label>
+              <input id="lim-temperature-min" type="number" step="0.1" required>
+              <label for="lim-temperature-max">Máximo</label>
+              <input id="lim-temperature-max" type="number" step="0.1" required>
+            </fieldset>
+
+            <fieldset>
+              <legend>Umidade (%)</legend>
+              <label for="lim-humidity-min">Mínimo</label>
+              <input id="lim-humidity-min" type="number" step="0.1" required>
+              <label for="lim-humidity-max">Máximo</label>
+              <input id="lim-humidity-max" type="number" step="0.1" required>
+            </fieldset>
+
+            <fieldset>
+              <legend>Luminosidade (%)</legend>
+              <label for="lim-luminosity-min">Mínimo</label>
+              <input id="lim-luminosity-min" type="number" step="0.1" required>
+              <label for="lim-luminosity-max">Máximo</label>
+              <input id="lim-luminosity-max" type="number" step="0.1" required>
+            </fieldset>
+
+            <div class="botoes">
+              <button type="submit" class="botao primario">Salvar limites</button>
+              <button type="button" class="botao" id="restaurar-limites">Restaurar valores iniciais</button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Notificações rápidas no canto inferior direito -->
+  <div id="aviso" class="aviso" role="status" aria-live="polite" hidden></div>
+
+  <!-- Scripts: CDN oficial do Chart.js 4.4.1 + Script da aplicação -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
