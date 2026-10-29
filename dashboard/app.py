@@ -90,39 +90,21 @@ def historico():
         quantidade = int(request.args.get("quantidade", 20))
     except ValueError:
         quantidade = 20
-    quantidade = max(1, min(quantidade, 100))
+    
+    quantidade = max(1, min(quantidade, 1000))
+    busca_sth = min(quantidade, 100)
 
     try:
-        leituras = sth_client.buscar_historico(atributo, entidade, tipo, 100)
+        # Agora o Python envia as datas para o Banco de Dados fazer o filtro antes!
+        leituras = sth_client.buscar_historico(atributo, entidade, tipo, busca_sth, data_inicio, data_fim)
     except requests.RequestException as e:
         return erro("Não foi possível consultar o STH-Comet.", 502, str(e))
-
-    # Filtra localmente por data se o usuário preencheu o intervalo
-    if leituras and (data_inicio or data_fim):
-        filtradas = []
-        for l in leituras:
-            hora_str = str(l.get("hora", ""))[:10]  # Extrai a parte YYYY-MM-DD
-            if not hora_str:
-                continue
-            
-            valido = True
-            if data_inicio and hora_str < data_inicio:
-                valido = False
-            if data_fim and hora_str > data_fim:
-                valido = False
-            
-            if valido:
-                filtradas.append(l)
-        leituras = filtradas[-quantidade:]
-    else:
-        leituras = leituras[-quantidade:] if leituras else []
 
     return jsonify({
         "atributo": atributo,
         "entidade": entidade,
         "leituras": leituras
     })
-
 
 # ---------------------------------------------------------------- status e comandos
 
