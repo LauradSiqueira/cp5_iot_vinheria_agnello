@@ -1,5 +1,12 @@
 "use strict";
 
+let usarF = false;
+function alternarUnidade() {
+    usarF = !usarF;
+    ATRIBUTOS.temperature.unidade = usarF ? "°F" : "°C";
+    ciclo(); // Atualiza a tela na hora
+} 
+
 /* ============================ 1. CONFIGURAÇÕES E ESTADO ============================ */
 const INTERVALO_MS = 5000;          // Intervalo de atualização (5s)
 const FUSO = "America/Sao_Paulo";   // Fuso horário exibido nas telas
@@ -161,13 +168,22 @@ function mostrarStatus(r) {
     const cartao = document.querySelector(`[data-atributo="${atributo}"]`);
     const situacao = r.estados[atributo];
 
-    cartao.querySelector("[data-valor]").textContent = formatarNumero(r.valores[atributo], info.casas);
+    let valor = r.valores[atributo];
+    if (atributo === "temperature" && usarF) valor = (valor * 1.8) + 32;
+    cartao.querySelector("[data-valor]").textContent = formatarNumero(valor, info.casas);
+    let elementoUnidade = cartao.querySelector("[data-unidade]");
+    if (elementoUnidade) elementoUnidade.textContent = info.unidade;
     const chip = cartao.querySelector("[data-chip]");
     chip.textContent = ROTULOS_ESTADO[situacao];
     chip.className = `chip ${situacao}`;
     const limite = r.limites[atributo];
+    let limMin = limite.min, limMax = limite.max;
+    if (atributo === "temperature" && usarF) { 
+    limMin = (limMin * 1.8) + 32; 
+    limMax = (limMax * 1.8) + 32; 
+}
     cartao.querySelector("[data-faixa]").textContent =
-      `Faixa ideal: ${formatarLimite(limite.min)} a ${formatarLimite(limite.max)} ${info.unidade}`;
+    `Faixa ideal: ${formatarLimite(limMin)} a ${formatarLimite(limMax)} ${info.unidade}`;
     cartao.classList.toggle("fora", situacao === "alto" || situacao === "baixo");
   }
   $("resumo-alerta").textContent = r.comando_sugerido === "normal"
@@ -249,17 +265,47 @@ function desenharGrafico(atributo, leituras) {
   estado.historico[atributo] = leituras;
   const grafico = estado.graficos[atributo];
   const limite = estado.limites[atributo];
+  const info = ATRIBUTOS[atributo]; // Pega a unidade atual (°C ou °F)
+
   if (grafico) {
+    // 1. Prepara os dados originais
+    let dadosValores = leituras.map((l) => l.valor);
+    let valMax = limite.max;
+    let valMin = limite.min;
+
+    // 2. Se for temperatura e o botão estiver ativo, converte tudo para Fahrenheit
+    if (atributo === "temperature" && usarF) {
+      dadosValores = dadosValores.map((v) => (v * 1.8) + 32);
+      valMax = (valMax * 1.8) + 32;
+      valMin = (valMin * 1.8) + 32;
+    }
+
+    // 3. Muda a letrinha do eixo Y do gráfico e o título no HTML (°C ou °F)
+    if (atributo === "temperature") {
+      grafico.options.scales.y.title.text = info.unidade;
+      
+      let tituloGrafico = document.getElementById("titulo-unidade-temperature");
+      if (tituloGrafico) tituloGrafico.textContent = info.unidade;
+    }
+
+    // 4. Injeta os dados convertidos no gráfico
     grafico.data.labels = leituras.map((l) => formatarHora(l.hora));
-    grafico.data.datasets[0].data = leituras.map((l) => l.valor);
-    grafico.data.datasets[1].data = leituras.map(() => limite.max);
-    grafico.data.datasets[2].data = leituras.map(() => limite.min);
+    grafico.data.datasets[0].data = dadosValores;
+    grafico.data.datasets[1].data = leituras.map(() => valMax);
+    grafico.data.datasets[2].data = leituras.map(() => valMin);
     grafico.update("none");
   }
-  const info = ATRIBUTOS[atributo];
+
+  // 5. Arruma a legenda de "Última leitura" abaixo do gráfico
   const ultima = leituras[leituras.length - 1];
+  let ultimaValor = ultima ? ultima.valor : null;
+  
+  if (ultimaValor !== null && atributo === "temperature" && usarF) {
+    ultimaValor = (ultimaValor * 1.8) + 32;
+  }
+
   $(`ultima-${atributo}`).textContent = ultima
-    ? `Última leitura: ${formatarNumero(ultima.valor, info.casas)} ${info.unidade} em ${formatarDataHora(ultima.hora)}`
+    ? `Última leitura: ${formatarNumero(ultimaValor, info.casas)} ${info.unidade} em ${formatarDataHora(ultima.hora)}`
     : "Ainda não há leituras gravadas para este sensor.";
 }
 

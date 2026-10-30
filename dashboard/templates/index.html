@@ -47,7 +47,13 @@
         <div class="cartoes">
           <article class="cartao" data-atributo="temperature">
             <h2>Temperatura</h2>
-            <p class="valor"><span data-valor>--</span><span class="unidade">°C</span></p>
+            <p class="valor"><span data-valor>--</span><span class="unidade" data-unidade>°C</span></p>
+            
+            <button onclick="alternarUnidade()" style="background-color: #6b1f3a; color: #fffffffd; border: none; 
+            padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: bold; margin-bottom: 10px;">
+              Mudar °C / °F
+            </button>
+            
             <p class="chip sem_dado" data-chip>Sem dados</p>
             <p class="suave" data-faixa></p>
           </article>
@@ -109,7 +115,7 @@
 
         <div class="bloco">
           <div class="bloco-topo">
-            <h2>Temperatura (°C)</h2>
+            <h3>Temperatura (<span id="titulo-unidade-temperature">°C</span>)</h3>
             <button type="button" class="botao" data-csv="temperature">Baixar CSV</button>
           </div>
           <div class="grafico"><canvas id="grafico-temperature"></canvas></div>
