@@ -42,28 +42,9 @@ Sala: ESPH - 2026
 - Wokwi: simulação e prototipação
 - Arduino IDE: gravação do código no ESP32
 
-# Manual de Instalação e Operação 
+# Arquitetura
+![diagrama](./imagens/arquitetura-vinheria.svg)
 
-Este projeto utiliza um dashboard web em Python (Flask) conectado à infraestrutura FIWARE (AWS EC2).
-
-1. Instalação e Execução Local
-
-Ambiente Virtual: Acesse a pasta dashboard, crie o ambiente virtual com python -m venv venv e ative-o (source venv/Scripts/activate no Windows ou source venv/bin/activate no Linux/Mac).
-
-Dependências: Execute pip install -r requirements.txt.
-
-Configuração: Copie .env.example para .env e insira o IP público atual da instância AWS na variável FIWARE_IP (apenas os números).
-
-Execução: Rode python app.py e acesse o navegador em [http://127.0.0.1:5000](http://127.0.0.1:5000).
-
-2. Provisionamento (FIWARE)
-Feito via Postman (utilizando a collection do repositório) uma única vez. Siga a ordem: provisionamento do Service Group, registro do dispositivo e comandos (IoT Agent), e registro de subscriptions (Orion para STH-Comet).
-
-3. Lógica de Operação
-O sistema lê os dados dos sensores a cada 5 segundos. Caso a temperatura, umidade ou luminosidade saiam dos limites estipulados no dashboard, comandos MQTT automáticos são enviados para o ESP32. Isso aciona o Cooler (via relé), acende o LED Azul e emite alertas sonoros no buzzer até a situação normalizar.
-
-4. Rotina de IP Dinâmico (AWS Academy)
-Como o IP muda a cada nova sessão no laboratório, lembre-se sempre de atualizá-lo em três lugares antes de apresentar: no arquivo .env do Flask, no código .ino do ESP32 (variável BROKER_MQTT) e no Postman.
 
 # Como executar
 
