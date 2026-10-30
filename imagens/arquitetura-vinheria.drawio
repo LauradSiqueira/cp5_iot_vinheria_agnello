@@ -1,0 +1,79 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Arquitetura Vinheria IoT" id="vinheria-arq-1">
+    <mxGraphModel dx="1736" dy="973" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="900" pageHeight="780" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="layer-app" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=none;strokeColor=#9673a6;strokeWidth=2;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontStyle=1;fontColor=#990099;fontSize=14;" value="Aplicação" vertex="1">
+          <mxGeometry height="130" width="860" x="20" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="layer-back" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=none;strokeColor=#6c8ebf;strokeWidth=2;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontStyle=1;fontColor=#004C99;fontSize=14;" value="Back-end (FIWARE na AWS EC2)" vertex="1">
+          <mxGeometry height="290" width="860" x="20" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="layer-iot" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=none;strokeColor=#006666;strokeWidth=2;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontStyle=1;fontColor=#006666;fontSize=14;" value="IoT " vertex="1">
+          <mxGeometry height="260" width="860" x="20" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="postman" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;fontStyle=1;" value="Postman&#xa;(comandos de alerta e controle do LED)" vertex="1">
+          <mxGeometry height="70" width="200" x="330" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dashboard" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;fontStyle=1;" value="Dashboard dinâmico&#xa;(dados armazenados e alertas)" vertex="1">
+          <mxGeometry height="70" width="200" x="620" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="agent" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontStyle=1;" value="IoT Agent MQTT" vertex="1">
+          <mxGeometry height="70" width="180" x="60" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="orion" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontStyle=1;" value="Orion Context Broker&#xa;(estado atual)" vertex="1">
+          <mxGeometry height="70" width="200" x="330" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="sth" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontStyle=1;" value="STH-Comet&#xa;(histórico)" vertex="1">
+          <mxGeometry height="70" width="200" x="620" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="broker" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontStyle=1;" value="Broker MQTT&#xa;(Mosquitto)" vertex="1">
+          <mxGeometry height="70" width="180" x="60" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="mongo" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontStyle=1;" value="MongoDB" vertex="1">
+          <mxGeometry height="70" width="200" x="475" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="sensores" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=2;fontStyle=1;" value="Sensores&#xa;DHT11 (temperatura e umidade)&#xa;LDR (luminosidade)&#xa;RTC DS1307 (data e hora)" vertex="1">
+          <mxGeometry height="100" width="220" x="50" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="esp" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=2;fontStyle=1;" value="ESP32 DevKit 1&#xa;(leitura, alertas locais e controle do cooler)" vertex="1">
+          <mxGeometry height="100" width="200" x="340" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="atuadores" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=2;fontStyle=1;" value="Atuadores&#xa;Módulo relé + cooler 12V (exaustor)&#xa;LED RGB e buzzer (alertas)" vertex="1">
+          <mxGeometry height="100" width="240" x="610" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="postman" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;startArrow=block;startFill=0;endArrow=block;endFill=0;strokeWidth=2;dashed=1;dashPattern=1 1;fontStyle=1;" target="orion" value="Comandos (1026)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="dashboard" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;startArrow=block;startFill=0;endArrow=block;endFill=0;strokeWidth=2;dashed=1;dashPattern=1 1;fontStyle=1;" target="sth" value="Consulta histórica (8666)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="agent" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;startArrow=block;startFill=0;endArrow=block;endFill=0;strokeWidth=2;dashed=1;dashPattern=1 1;fontStyle=1;" target="orion" value="NGSIv2 (1026)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="orion" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;startArrow=none;endArrow=block;endFill=0;strokeWidth=2;dashed=1;dashPattern=1 1;fontStyle=1;" target="sth" value="Notificações">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="agent" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;startArrow=block;startFill=0;endArrow=block;endFill=0;strokeWidth=2;dashed=1;dashPattern=1 1;fontStyle=1;" target="broker" value="Porta 4041">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="orion" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;startArrow=block;startFill=0;endArrow=block;endFill=0;strokeWidth=2;dashed=1;dashPattern=1 1;fontStyle=1;" target="mongo" value="27017">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="sth" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;startArrow=block;startFill=0;endArrow=block;endFill=0;strokeWidth=2;dashed=1;dashPattern=1 1;fontStyle=1;" target="mongo" value="27017">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="broker" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;startArrow=block;startFill=0;endArrow=block;endFill=0;strokeWidth=2;dashed=1;dashPattern=1 1;fontStyle=1;" target="esp" value="MQTT / Wi-Fi (1883)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="1" source="sensores" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;startArrow=none;endArrow=block;endFill=0;strokeWidth=2;fontStyle=1;" target="esp" value="Leituras">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="1" source="esp" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;startArrow=none;endArrow=block;endFill=0;strokeWidth=2;fontStyle=1;" target="atuadores" value="Acionamento">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
